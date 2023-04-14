@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.475">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Hamel Husain">
+<meta name="dcterms.date" content="2022-11-07">
+<meta name="description" content="A demo of using nbdev with Hugging Face Spaces &amp; Gradio.">
+
+<title>nbdev - Create A 🤗 Space From A Notebook</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../favicon.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="nbdev - Create A 🤗 Space From A Notebook">
+<meta property="og:description" content="A demo of using nbdev with Hugging Face Spaces &amp; Gradio.">
+<meta property="og:image" content="https://nbdev.fast.ai/blog/posts/2022-11-07-spaces/blog_cover.jpeg">
+<meta property="og:site-name" content="nbdev">
+<meta name="twitter:title" content="nbdev - Create A 🤗 Space From A Notebook">
+<meta name="twitter:description" content="A demo of using nbdev with Hugging Face Spaces &amp; Gradio.">
+<meta name="twitter:image" content="https://nbdev.fast.ai/blog/posts/2022-11-07-spaces/blog_cover.jpeg">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">nbdev</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../../../getting_started.html" aria-current="page">
+ <span class="menu-text">Get Started</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../tutorials/tutorial.html">
+ <span class="menu-text">Tutorial</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../blog/index.html">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-help" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Help</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-help">    
+        <li>
+    <a class="dropdown-item" href="https://github.com/fastai/nbdev/issues"><i class="bi bi-bug" role="img">
+</i> 
+ <span class="dropdown-text">Report an Issue</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://forums.fast.ai/"><i class="bi bi-chat-right-text" role="img">
+</i> 
+ <span class="dropdown-text">Fast.ai Forum</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../getting_started.html#faq"><i class="bi bi-question-circle" role="img">
+</i> 
+ <span class="dropdown-text">FAQ</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/fastai/nbdev"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/fastdotai"><i class="bi bi-twitter" role="img" aria-label="Fast.ai Twitter">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Create A 🤗 Space From A Notebook</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../getting_started.html" class="sidebar-item-text sidebar-link">Getting Started</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../migrating.html" class="sidebar-item-text sidebar-link">nbdev1 Migration</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../tutorials/index.html" class="sidebar-item-text sidebar-link">Tutorials</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../tutorials/tutorial.html" class="sidebar-item-text sidebar-link">End-To-End Walkthrough</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../tutorials/best_practices.html" class="sidebar-item-text sidebar-link">Notebook Best Practices</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../tutorials/qmd_intro.html" class="sidebar-item-text sidebar-link">Qmd Documents</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../tutorials/renderscript.html" class="sidebar-item-text sidebar-link">RenderScripts</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../tutorials/git_friendly_jupyter.html" class="sidebar-item-text sidebar-link">Git-Friendly Jupyter</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../tutorials/blogging.html" class="sidebar-item-text sidebar-link">Blogging</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../tutorials/pre_commit.html" class="sidebar-item-text sidebar-link">Pre-Commit Hooks</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../tutorials/docs_only.html" class="sidebar-item-text sidebar-link">Documentation Only Sites</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../tutorials/modular_nbdev.html" class="sidebar-item-text sidebar-link">Modular nbdev</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../tutorials/extensions.html" class="sidebar-item-text sidebar-link">Writing nbdev plugins</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../explanations/index.html" class="sidebar-item-text sidebar-link">Explanations</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../explanations/config.html" class="sidebar-item-text sidebar-link">Settings.ini</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../explanations/directives.html" class="sidebar-item-text sidebar-link">Directives</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../explanations/docs.html" class="sidebar-item-text sidebar-link">Docs Website</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../explanations/why_nbdev.html" class="sidebar-item-text sidebar-link">Why nbdev</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../../api/index.html" class="sidebar-item-text sidebar-link">API</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/config.html" class="sidebar-item-text sidebar-link">config</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/maker.html" class="sidebar-item-text sidebar-link">maker</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/process.html" class="sidebar-item-text sidebar-link">process</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/export.html" class="sidebar-item-text sidebar-link">export</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/doclinks.html" class="sidebar-item-text sidebar-link">doclinks</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/sync.html" class="sidebar-item-text sidebar-link">sync</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/merge.html" class="sidebar-item-text sidebar-link">merge</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/showdoc.html" class="sidebar-item-text sidebar-link">showdoc</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/frontmatter.html" class="sidebar-item-text sidebar-link">frontmatter</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/processors.html" class="sidebar-item-text sidebar-link">processors</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/clean.html" class="sidebar-item-text sidebar-link">clean</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/test.html" class="sidebar-item-text sidebar-link">test</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/cli.html" class="sidebar-item-text sidebar-link">cli</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/quarto.html" class="sidebar-item-text sidebar-link">quarto</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/qmd.html" class="sidebar-item-text sidebar-link">qmd</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/migrate.html" class="sidebar-item-text sidebar-link">migrate</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/serve.html" class="sidebar-item-text sidebar-link">serve</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../api/release.html" class="sidebar-item-text sidebar-link">release</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#create-a-gradio-enabled-space-on-hugging-face" id="toc-create-a-gradio-enabled-space-on-hugging-face" class="nav-link active" data-scroll-target="#create-a-gradio-enabled-space-on-hugging-face">1. Create a Gradio-enabled Space on Hugging Face</a></li>
+  <li><a href="#create-a-notebook" id="toc-create-a-notebook" class="nav-link" data-scroll-target="#create-a-notebook">2. Create A Notebook</a></li>
+  <li><a href="#make-an-app-with-gradio" id="toc-make-an-app-with-gradio" class="nav-link" data-scroll-target="#make-an-app-with-gradio">3. Make an app with Gradio</a></li>
+  <li><a href="#convert-this-notebook-into-a-gradio-app" id="toc-convert-this-notebook-into-a-gradio-app" class="nav-link" data-scroll-target="#convert-this-notebook-into-a-gradio-app">4. Convert This Notebook Into A Gradio App</a>
+  <ul>
+  <li><a href="#understanding-what-is-generated" id="toc-understanding-what-is-generated" class="nav-link" data-scroll-target="#understanding-what-is-generated">Understanding what is generated</a></li>
+  <li><a href="#fill-out-requirements.txt" id="toc-fill-out-requirements.txt" class="nav-link" data-scroll-target="#fill-out-requirements.txt">Fill out <code>requirements.txt</code></a></li>
+  </ul></li>
+  <li><a href="#launch-your-gradio-app" id="toc-launch-your-gradio-app" class="nav-link" data-scroll-target="#launch-your-gradio-app">5. Launch Your Gradio App</a></li>
+  <li><a href="#voilà-enjoy-your-gradio-app" id="toc-voilà-enjoy-your-gradio-app" class="nav-link" data-scroll-target="#voilà-enjoy-your-gradio-app">Voilà! Enjoy your Gradio App</a></li>
+  <li><a href="#shameless-plug-nbdev" id="toc-shameless-plug-nbdev" class="nav-link" data-scroll-target="#shameless-plug-nbdev">Shameless Plug: nbdev</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/fastai/nbdev/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Create A 🤗 Space From A Notebook</h1>
+</div>
+
+<div>
+  <div class="description">
+    A demo of using nbdev with Hugging Face Spaces &amp; Gradio.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Hamel Husain </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 7, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="blog_cover.jpeg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Image created with Stable Diffusion from <a href="https://huggingface.co/spaces/stabilityai/stable-diffusion">this space</a></figcaption><p></p>
+</figure>
+</div>
+<p><a href="https://huggingface.co/spaces/launch">Hugging Face Spaces</a> provides an easy ways to deploy a web app with python. <a href="https://gradio.app/">Gradio</a> is one of my favorite tools for building these web apps. For example, the cover-image for this blog post was generated with a <a href="https://huggingface.co/spaces/stabilityai/stable-diffusion">Gradio App</a>!<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Gradio also allows you to prototype your web apps in notebooks which allows you to iterate fast. Unfortunately, Hugging Face Spaces requires you to package your web application code as a python script named <code>app.py</code>.</p>
+<p>However, <strong>thanks to <a href="https://nbdev.fast.ai">nbdev</a>, you can deploy a Gradio app to Spaces from a notebook without having to refactor your code into a script!</strong> When you finish this tutorial, you will have an app that looks like this:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://huggingface.co/spaces/hamel/hfspace_demo"><img src="final_app.png" class="img-fluid figure-img"></a></p>
+<p></p><figcaption class="figure-caption"><a href="https://huggingface.co/spaces/hamel/hfspace_demo">A Gradio app</a> that shows the size of a HF Dataset.</figcaption><p></p>
+</figure>
+</div>
+<p><em>The above app allows you to lookup the size of any <a href="https://huggingface.co/docs/datasets/index">Hugging Face Dataset</a>, using the <a href="https://huggingface.co/docs/datasets-server/index">Hugging Face Datasets Server API</a>.</em></p>
+<p>Authoring your spaces in notebooks offers a number of benefits such as the ability to:</p>
+<ul>
+<li>Document your code (with <code>quarto</code> or <code>nbdev</code>)</li>
+<li>Prototype and author your code (with <code>nbdev.export.export_nb</code>)</li>
+<li>Test your code (with <code>nbdev_test</code>)</li>
+</ul>
+<p>… All from the same environment!</p>
+<section id="create-a-gradio-enabled-space-on-hugging-face" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-gradio-enabled-space-on-hugging-face">1. Create a Gradio-enabled Space on Hugging Face</h2>
+<p>The first step is to create a space and select the appropriate sdk (which is Gradio in this example), according to <a href="https://huggingface.co/docs/hub/spaces-overview#creating-a-new-space">these instructions</a>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="create_space.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">create a Hugging Face Space</figcaption><p></p>
+</figure>
+</div>
+<p>After you are done creating the space, clone the repo locally. In this example, I ran the command <code>git clone https://huggingface.co/spaces/hamel/hfspace_demo</code>.</p>
+</section>
+<section id="create-a-notebook" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-notebook">2. Create A Notebook</h2>
+<p>Before getting started you will want to install the dependencies for this tutorial:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install git<span class="op">+</span>https:<span class="op">//</span>github.com<span class="op">/</span>fastai<span class="op">/</span>nbdev.git gradio fastcore</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Create a notebook called <code>app.ipynb</code> in the root of your newly cloned repo. Alternatively, download <a href="https://gist.github.com/hamelsmu/35be07d242f3f19063c3a3839127dc67">the notebook</a> and follow along.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Download the notebook and follow along
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This blog post is a verbose version of the “notebook” you can use to create a Gradio app. However, it can be useful to see just the code without any of the prose. A <a href="https://gist.github.com/hamelsmu/35be07d242f3f19063c3a3839127dc67">concise version of this notebook is here</a>. I recommend taking a look at this notebook during or after you read this blog post.</p>
+</div>
+</div>
+</section>
+<section id="make-an-app-with-gradio" class="level2">
+<h2 class="anchored" data-anchor-id="make-an-app-with-gradio">3. Make an app with Gradio</h2>
+<p>Below, I will create a <a href="https://gradio.app/">gradio</a> app in a notebook and show you how to deploy it to <a href="https://huggingface.co/docs/hub/spaces">Hugging Face Spaces</a>.</p>
+<p>First, lets import the libraries we need, which in this case are <code>gradio</code> and <code>fastcore</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|export</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gradio <span class="im">as</span> gr</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.net <span class="im">import</span> urljson, HTTPError</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Next, write the functions your gradio app will use. Because of <a href="https://nbdev.fast.ai/blog/posts/2022-07-28-nbdev2/">nbdev</a>, you can prototype and package your code all in one place. <strong>The special comment <code>#|export</code> marks which cells will be sent to a python script</strong> (more on this later). Note that there are only three cells in this notebook with the <code>#|export</code> directive.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|export</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> size(repo:<span class="bu">str</span>):</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"Returns the size in GB of a HuggingFace Dataset."</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    url <span class="op">=</span> <span class="ss">f'https://huggingface.co/api/datasets/</span><span class="sc">{</span>repo<span class="sc">}</span><span class="ss">'</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>: resp <span class="op">=</span> urljson(<span class="ss">f'</span><span class="sc">{</span>url<span class="sc">}</span><span class="ss">/treesize/main'</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> HTTPError: <span class="cf">return</span> <span class="ss">f'Did not find repo: </span><span class="sc">{</span>url<span class="sc">}</span><span class="ss">'</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    gb <span class="op">=</span> resp[<span class="st">'size'</span>] <span class="op">/</span> <span class="fl">1e9</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f'</span><span class="sc">{</span>gb<span class="sc">:.2f}</span><span class="ss"> GB'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>size</code> takes as an input a <a href="https://huggingface.co/docs/datasets/index">Hugging Face Dataset</a> repo and returns the total size in GB of the data.</p>
+<p>For example, I can check the size of <a href="https://huggingface.co/datasets/tglcourse/CelebA-faces-cropped-128">tglcourse/CelebA-faces-cropped-128</a> like so:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>size(<span class="st">"tglcourse/CelebA-faces-cropped-128"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output">
+<pre><code>'5.49 GB'</code></pre>
+</div>
+<p>You can construct a simple UI with the <code>gradio.interface</code> and then call the <code>launch</code> method of that interface to display a preview in a notebook. This is a great way to test your app to see if it works:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|export</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>iface <span class="op">=</span> gr.Interface(fn<span class="op">=</span>size, inputs<span class="op">=</span>gr.Text(value<span class="op">=</span><span class="st">"tglcourse/CelebA-faces-cropped-128"</span>), outputs<span class="op">=</span><span class="st">"text"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>iface.launch(height<span class="op">=</span><span class="dv">450</span>, width<span class="op">=</span><span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output">
+<pre><code>Running on local URL:  http://127.0.0.1:7861
+
+To create a public link, set `share=True` in `launch()`.</code></pre>
+<p><img src="gradio_local.png" class="img-fluid"></p>
+</div>
+<p>Note how running the <code>launch()</code> method in a notebook runs a webserver in the background. Below, I call the <code>close()</code> method to close the webserver.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this is only necessary in a notebook</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>iface.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output">
+<pre><code>Closing server running on port: 7861</code></pre>
+</div>
+</section>
+<section id="convert-this-notebook-into-a-gradio-app" class="level2">
+<h2 class="anchored" data-anchor-id="convert-this-notebook-into-a-gradio-app">4. Convert This Notebook Into A Gradio App</h2>
+<p>In order to host this code on Hugging Face Spaces, you will export parts of this notebook to a script named <code>app.py</code>. As a reminder, this is what the special <code>#|export</code> comment that you have seen in cells above do! You can export code from this notebook like so:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nbdev.export <span class="im">import</span> nb_export</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>nb_export(<span class="st">'app.ipynb'</span>, lib_path<span class="op">=</span><span class="st">'.'</span>, name<span class="op">=</span><span class="st">'app'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="understanding-what-is-generated" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-what-is-generated">Understanding what is generated</h3>
+<p>Notice how the contents of app.py only contain the exported cells from this notebook:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>cat app.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output">
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># AUTOGENERATED! DO NOT EDIT! File to edit: app.ipynb.</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># %% auto 0</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>__all__ <span class="op">=</span> [<span class="st">'iface'</span>, <span class="st">'size'</span>]</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># %% app.ipynb 6</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gradio <span class="im">as</span> gr</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.net <span class="im">import</span> urljson, HTTPError</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># %% app.ipynb 8</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> size(repo:<span class="bu">str</span>):</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">"Returns the size in GB of a HuggingFace Dataset."</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    url <span class="op">=</span> <span class="ss">f'https://huggingface.co/api/datasets/</span><span class="sc">{</span>repo<span class="sc">}</span><span class="ss">'</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>: resp <span class="op">=</span> urljson(<span class="ss">f'</span><span class="sc">{</span>url<span class="sc">}</span><span class="ss">/treesize/main'</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> HTTPError: <span class="cf">return</span> <span class="ss">f'Did not find repo: </span><span class="sc">{</span>url<span class="sc">}</span><span class="ss">'</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    gb <span class="op">=</span> resp[<span class="st">'size'</span>] <span class="op">/</span> <span class="fl">1e9</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f'</span><span class="sc">{</span>gb<span class="sc">:.2f}</span><span class="ss"> GB'</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># %% app.ipynb 12</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>iface <span class="op">=</span> gr.Interface(fn<span class="op">=</span>size, inputs<span class="op">=</span>gr.Text(value<span class="op">=</span><span class="st">"tglcourse/CelebA-faces-cropped-128"</span>), outputs<span class="op">=</span><span class="st">"text"</span>)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>iface.launch(height<span class="op">=</span><span class="dv">450</span>, width<span class="op">=</span><span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="fill-out-requirements.txt" class="level3">
+<h3 class="anchored" data-anchor-id="fill-out-requirements.txt">Fill out <code>requirements.txt</code></h3>
+<p>You must supply a <code>requirements.txt</code> file so the Gradio app knows how to build your dependencies. In this example, the only dependency other than Gradio is <code>fastcore</code>. You don’t need to specify Gradio itself as a dependency in <code>requirements.txt</code>, so our <code>requirements.txt</code> file has only one dependency:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>writefile requirements.txt</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fastcore</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>Writing requirements.txt</code></pre>
+<p><em>Note: you may want to add operating system dependencies in addition to python dependencies. You can do this via a <code>packages.txt</code> file as <a href="https://huggingface.co/docs/hub/spaces-dependencies#adding-your-own-dependencies">documented here</a>.</em></p>
+</section>
+</section>
+<section id="launch-your-gradio-app" class="level2">
+<h2 class="anchored" data-anchor-id="launch-your-gradio-app">5. Launch Your Gradio App</h2>
+<p>To launch your gradio app, you need to commit the changes to the Hugging Face repo:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add <span class="at">-A</span><span class="kw">;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Add application files"</span><span class="kw">;</span> <span class="fu">git</span> push</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="voilà-enjoy-your-gradio-app" class="level1">
+<h1>Voilà! Enjoy your Gradio App</h1>
+<p>After a couple of minutes, you will see your app published! This app is published <a href="https://huggingface.co/spaces/hamel/hfspace_demo">here</a>.</p>
+</section>
+<section id="shameless-plug-nbdev" class="level1">
+<h1>Shameless Plug: <a href="https://nbdev.fast.ai/blog/posts/2022-07-28-nbdev2/">nbdev</a></h1>
+<p>Hopefully you felt something magical while doing this example. Even though the target application required you to write a python script (<code>app.py</code>), you didn’t have to refactor your script from a notebook! I believe that you shouldn’t have to refactor your code and switch contexts even when creating python packages! If this intrigues you, check out <a href="https://nbdev.fast.ai/blog/posts/2022-07-28-nbdev2/">nbdev</a></p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>The prompt that generated the cover image is: “A data scientist at a computer in a futuristic city with a view of the planet Jupyter in the night sky, trending on artstation, high detail, science-fiction”<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
